@@ -17,6 +17,11 @@ function App() {
     setCart([...cart, item]);
   };
 
+  const removeItem = item => {
+	  const remainder = cart.filter(currentItem => currentItem.id !== item.id)
+	  setCart(remainder)
+  }
+
   return (
     <div className="App">
       <CartsContext.Provider value={{ cart }}>
@@ -24,7 +29,7 @@ function App() {
       </CartsContext.Provider>
 
       {/* Routes */}
-      <productsContext.Provider value={{ products, addItem }}>
+      <productsContext.Provider value={{ products, addItem, removeItem }}>
         <Route exact path="/" component={Products} />
       </productsContext.Provider>
 
