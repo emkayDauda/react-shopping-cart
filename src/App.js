@@ -19,7 +19,9 @@ function App() {
 
   return (
     <div className="App">
-      <Navigation cart={cart} />
+     <CartsContext.Provider value={{cart}}>
+	 <Navigation />
+	 </CartsContext.Provider>
 
       {/* Routes */}
      <productsContext.Provider value={{ products, addItem }} >
