@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Route } from "react-router-dom";
 import data from "./data";
 import productsContext from "./contexts/productsContext";
+import CartsContext from "./contexts/CartsContext";
 
 // Components
 import Navigation from "./components/Navigation";
