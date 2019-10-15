@@ -1,42 +1,51 @@
-import React, { useState } from 'react';
-import { Route } from 'react-router-dom';
-import data from './data';
+import React, { useState } from "react";
+import { Route } from "react-router-dom";
+import data from "./data";
+import productsContext from "./contexts/productsContext";
+import CartsContext from "./contexts/CartsContext";
 
 // Components
-import Navigation from './components/Navigation';
-import Products from './components/Products';
-import ShoppingCart from './components/ShoppingCart';
+import Navigation from "./components/Navigation";
+import Products from "./components/Products";
+import ShoppingCart from "./components/ShoppingCart";
 
 function App() {
-	const [products] = useState(data);
-	const [cart, setCart] = useState([]);
+  const [products] = useState(data);
+  const [cart, setCart] = useState(() => {
+	const oldCart = JSON.parse(localStorage.getItem('cart'))
+	console.log(oldCart);
+	
+	return oldCart ? oldCart : []
+  });
 
-	const addItem = item => {
-		setCart([...cart, item]);
-	};
+  const addItem = item => {
+	setCart([...cart, item]);
+	localStorage.setItem('cart', JSON.stringify([...cart, item]));
+  };
 
-	return (
-		<div className="App">
-			<Navigation cart={cart} />
+  const removeItem = item => {
+	  const remainder = cart.filter(currentItem => currentItem.id !== item.id)
+	  setCart(remainder)
+	localStorage.setItem('cart', JSON.stringify(remainder));
 
-			{/* Routes */}
-			<Route
-				exact
-				path="/"
-				render={() => (
-					<Products
-						products={products}
-						addItem={addItem}
-					/>
-				)}
-			/>
+  }
 
-			<Route
-				path="/cart"
-				render={() => <ShoppingCart cart={cart} />}
-			/>
-		</div>
-	);
+  return (
+    <div className="App">
+      <CartsContext.Provider value={{ cart }}>
+        <Navigation />
+      </CartsContext.Provider>
+
+      {/* Routes */}
+      <productsContext.Provider value={{ products, addItem, removeItem }}>
+        <Route exact path="/" component={Products} />
+      </productsContext.Provider>
+
+      <CartsContext.Provider value={{ cart, removeItem }}>
+        <Route path="/cart" component={ShoppingCart} />
+      </CartsContext.Provider>
+    </div>
+  );
 }
 
 export default App;
